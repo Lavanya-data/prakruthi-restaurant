@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Prakruthi Restaurant · Visakhapatnam</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,6 @@
       <button class="nav-btn" onclick="openReviewModal()">
         <span>⭐</span> <span class="nav-btn-text">Reviews</span>
       </button>
-      <!-- LARGE PROMINENT CART BUTTON -->
       <button class="nav-btn cart-btn prominent-cart" onclick="toggleCart(true)">
         <span class="cart-icon">🛍️</span>
         <span class="cart-label-text">Cart:</span>
@@ -73,7 +72,7 @@
 
   <!-- PROMO STRIP -->
   <div class="promo-strip">
-    <div class="promo-item">✨ Use code <b class="code-pill">WELCOME10</b> for 10% OFF on your order!</div>
+    <div class="promo-item">✨ Use code <b class="code-pill">WELCOME10</b> for 10% OFF!</div>
     <div class="promo-item">🔥 Use code <b class="code-pill">FLAT50</b> for flat ₹50 OFF above ₹300!</div>
     <div class="promo-item">🎁 Use code <b class="code-pill">PRAKRUTHI15</b> for 15% OFF above ₹500!</div>
   </div>
@@ -93,7 +92,7 @@
     <!-- TWO-COLUMN LAYOUT: Sidebar + Content -->
     <div class="menu-layout">
 
-      <!-- LEFT: CATEGORY SIDEBAR -->
+      <!-- LEFT / TOP (ON MOBILE): CATEGORY SIDEBAR -->
       <nav class="category-sidebar" id="categorySidebar">
         <div class="cat-item active" data-cat="All" onclick="selectCategory('All', this)">
           <span class="cat-icon">🍽️</span>
@@ -177,8 +176,8 @@
     </div>
   </div>
 
-  <!-- FLOATING RIGHT SIDE CART BAR (ALWAYS CLEAR & VISIBLE) -->
-  <div class="floating-cart-pill" id="floatingCart" onclick="toggleCart(true)">
+  <!-- FLOATING RIGHT SIDE CART BAR (HIDDEN WHEN 0, CENTERED ON MOBILE) -->
+  <div class="floating-cart-pill" id="floatingCart" onclick="toggleCart(true)" style="display:none">
     <div class="f-cart-left">
       <span class="f-cart-icon">🛍️</span>
       <span class="f-cart-text">YOUR CART</span>
@@ -206,7 +205,7 @@
     <div class="cart-footer" id="cartFooter" style="display:none">
       <!-- Coupon -->
       <div class="coupon-row">
-        <input type="text" id="couponInput" placeholder="Enter promo code (e.g. WELCOME10)" class="coupon-field">
+        <input type="text" id="couponInput" placeholder="Promo code (e.g. WELCOME10)" class="coupon-field">
         <button class="coupon-apply-btn" onclick="applyCoupon()">Apply</button>
       </div>
       <div id="couponMsg" class="coupon-msg"></div>

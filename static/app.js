@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSpecials();
   loadReviewsStrip();
   initStarPicker();
+  updateCartUI();
   if (tableNum) setOrderType(document.querySelector('[data-ot="dinein"]'));
   const resDateInput = document.getElementById('resDate');
   if (resDateInput) resDateInput.min = new Date().toISOString().split('T')[0];
