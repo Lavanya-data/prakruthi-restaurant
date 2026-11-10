@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Portal Login · Prakruthi Restaurant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 25%, #221c12, #0b0b0c 75%);
+      font-family: 'Inter', sans-serif;
+      color: #e8dcc4;
+      padding: 20px;
+    }
+    .login-card {
+      width: min(420px, 100%);
+      background: rgba(20, 18, 15, 0.95);
+      border: 1px solid rgba(212, 176, 119, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 176, 119, 0.08);
+      border-radius: 14px;
+      padding: 38px 30px;
+      animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .brand-icon {
+      font-size: 26px;
+      color: #d4b077;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: #d4b077;
+      letter-spacing: 5px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .tagline {
+      color: #9c9078;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #d4b077;
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .input-wrapper {
+      position: relative;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      background: #0b0b0c;
+      border: 1px solid #3a3223;
+      border-radius: 8px;
+      color: #e8dcc4;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    input:focus {
+      border-color: #d4b077;
+      box-shadow: 0 0 0 3px rgba(212, 176, 119, 0.18);
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #9c9078;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+    .pw-toggle:hover {
+      color: #d4b077;
+    }
+    .login-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 13px;
+      border: 0;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #d4b077, #b88d49);
+      color: #111;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 176, 119, 0.25);
+    }
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 176, 119, 0.4);
+    }
+    .login-btn:active {
+      transform: translateY(0);
+    }
+    .err-box {
+      background: rgba(217, 83, 79, 0.15);
+      border: 1px solid #d9534f;
+      color: #ff8e8b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      animation: shake 0.4s ease;
+    }
+    .demo-hint {
+      margin-top: 22px;
+      padding: 12px;
+      background: rgba(212, 176, 119, 0.08);
+      border: 1px dashed rgba(212, 176, 119, 0.3);
+      border-radius: 8px;
+      font-size: 12px;
+      color: #c9bca0;
+      line-height: 1.6;
+    }
+    .demo-hint b {
+      color: #d4b077;
+    }
+    .demo-hint code {
+      background: #0b0b0c;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #f3dca5;
+      font-family: monospace;
+      border: 1px solid #3a3223;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #9c9078;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.3s;
+    }
+    .back-link:hover {
+      color: #d4b077;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(25px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="brand-icon">✦ ❦ ✦</div>
+    <h1>PRAKRUTHI</h1>
+    <div class="tagline">Restaurant Management Portal</div>
+
+    {% if err %}
+      <div class="err-box">⚠️ {{ err }}</div>
+    {% endif %}
+
+    <form method="post" action="/admin/login">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+          <input id="username" name="username" placeholder="Enter admin username" autocomplete="username" required autofocus value="{{ default_user if not err else '' }}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input id="password" name="password" type="password" placeholder="Enter admin password" autocomplete="current-password" required value="{{ default_pass if not err else '' }}">
+          <button type="button" class="pw-toggle" onclick="togglePasswordVisibility()" aria-label="Toggle password">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">Sign In to Dashboard</button>
+    </form>
+
+    <div class="demo-hint">
+      Default Credentials:<br>
+      Username: <code>{{ default_user }}</code> &nbsp;|&nbsp; Password: <code>{{ default_pass }}</code>
+    </div>
+
+    <div>
+      <a href="/" class="back-link">← Return to Public Website</a>
+    </div>
+  </div>
+
+  <script>
+    function togglePasswordVisibility() {
+      const p = document.getElementById('password');
+      if (p.type === 'password') {
+        p.type = 'text';
+      } else {
+        p.type = 'password';
+      }
+    }
+  </script>
+</body>
+</html>

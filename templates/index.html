@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prakruthi Restaurant · Visakhapatnam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body data-table="{{ table_num }}" data-rzp="{{ razorpay_key }}" data-mgr="{{ manager_phone }}">
+
+  <!-- TABLE QR WELCOME BANNER -->
+  {% if table_num %}
+  <div class="table-banner">
+    <span>🍽️ Welcome to <b>Prakruthi</b>! You are ordering for <b>Table #{{ table_num }}</b></span>
+    <span class="table-badge">DINE-IN ACTIVE</span>
+  </div>
+  {% endif %}
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <a href="/" class="logo">
+        <span class="logo-sym">✦</span> PRAKRUTHI
+      </a>
+      <div class="lang">
+        <button data-l="en" class="on">EN</button>
+        <button data-l="te">తెలుగు</button>
+        <button data-l="hi">हिंदी</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="nav-btn res-btn" onclick="openReservationModal()" data-t="book_btn">
+        <span>📅</span> <span class="nav-btn-text">Book Table</span>
+      </button>
+      <button class="nav-btn track-btn" onclick="openTrack()" data-t="trk">
+        <span>📦</span> <span class="nav-btn-text">Track</span>
+      </button>
+      <button class="nav-btn" onclick="openReviewModal()">
+        <span>⭐</span> <span class="nav-btn-text">Reviews</span>
+      </button>
+      <!-- LARGE PROMINENT CART BUTTON -->
+      <button class="nav-btn cart-btn prominent-cart" onclick="toggleCart(true)">
+        <span class="cart-icon">🛍️</span>
+        <span class="cart-label-text">Cart:</span>
+        <span id="cartHeaderTotal" class="cart-total-badge">₹0</span>
+        <span id="cc" class="badge">0</span>
+      </button>
+      <a href="/admin/login" class="nav-btn admin-link" title="Staff & Admin Portal">
+        <span>🔐</span> <span class="nav-btn-text">Admin</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="landing">
+    <div class="orn">❦ ✦ ❦</div>
+    <h1 class="brand">PRAKRUTHI</h1>
+    <div class="sub" data-t="sub">FINE DINING & AUTHENTIC TASTES · VISAKHAPATNAM</div>
+    <p class="quote" data-t="quote">Food crafted with soul, served in timeless elegance.</p>
+    <div class="hero-actions">
+      <a class="btn gold-btn" href="#menusec" data-t="viewmenu">View Menu</a>
+      <button class="btn glass-btn" onclick="openReservationModal()" data-t="book_table">Reserve a Table</button>
+    </div>
+    <a href="#menusec" class="scroll-down" aria-label="Scroll to menu">
+      <span class="scroll-text">Explore</span>
+      <span class="scroll-arrow">⌄</span>
+    </a>
+  </section>
+
+  <!-- PROMO STRIP -->
+  <div class="promo-strip">
+    <div class="promo-item">✨ Use code <b class="code-pill">WELCOME10</b> for 10% OFF on your order!</div>
+    <div class="promo-item">🔥 Use code <b class="code-pill">FLAT50</b> for flat ₹50 OFF above ₹300!</div>
+    <div class="promo-item">🎁 Use code <b class="code-pill">PRAKRUTHI15</b> for 15% OFF above ₹500!</div>
+  </div>
+
+  <!-- REVIEWS STRIP -->
+  <div class="reviews-strip" id="reviewsStrip"></div>
+
+  <!-- MENU SECTION (WITH RESTAURANT INTERIOR BACKGROUND) -->
+  <section id="menusec">
+    <div class="menu-section-header">
+      <h2 class="section-title" data-t="ourmenu">✦ OUR MENU ✦</h2>
+      <div class="menu-search-wrap">
+        <input type="text" id="searchInput" class="menu-search" placeholder="🔍 Search dishes or ingredients..." oninput="filterBySearch(this.value)">
+      </div>
+    </div>
+
+    <!-- TWO-COLUMN LAYOUT: Sidebar + Content -->
+    <div class="menu-layout">
+
+      <!-- LEFT: CATEGORY SIDEBAR -->
+      <nav class="category-sidebar" id="categorySidebar">
+        <div class="cat-item active" data-cat="All" onclick="selectCategory('All', this)">
+          <span class="cat-icon">🍽️</span>
+          <span class="cat-label" data-t="cat_all">All Items</span>
+        </div>
+        <div class="cat-item special-cat" data-cat="Today" onclick="selectCategory('Today', this)">
+          <span class="cat-icon">⭐</span>
+          <span class="cat-label">Today's Special</span>
+        </div>
+        <div class="cat-item special-cat" data-cat="Weekly" onclick="selectCategory('Weekly', this)">
+          <span class="cat-icon">📅</span>
+          <span class="cat-label">Weekly Specials</span>
+        </div>
+        <div class="cat-divider"></div>
+        <div class="cat-item" data-cat="Tiffins" onclick="selectCategory('Tiffins', this)">
+          <span class="cat-icon">🫓</span>
+          <span class="cat-label">Tiffins</span>
+        </div>
+        <div class="cat-item" data-cat="Starters" onclick="selectCategory('Starters', this)">
+          <span class="cat-icon">🥗</span>
+          <span class="cat-label">Starters</span>
+        </div>
+        <div class="cat-item" data-cat="Indian" onclick="selectCategory('Indian', this)">
+          <span class="cat-icon">🍛</span>
+          <span class="cat-label">Indian</span>
+        </div>
+        <div class="cat-item" data-cat="Chinese" onclick="selectCategory('Chinese', this)">
+          <span class="cat-icon">🥢</span>
+          <span class="cat-label">Chinese</span>
+        </div>
+        <div class="cat-divider"></div>
+        <div class="cat-veg-toggle">
+          <label class="veg-label">
+            <input type="checkbox" id="vegOnly" onchange="applyFilters()">
+            <span class="veg-dot"></span>
+            Veg Only
+          </label>
+        </div>
+      </nav>
+
+      <!-- RIGHT: MENU CONTENT -->
+      <div class="menu-content" id="menuContent">
+        <!-- Today's Special Banner -->
+        <div id="todaySpecialBanner" class="today-special-banner" style="display:none">
+          <div class="special-banner-header">
+            <span class="special-crown">👑</span>
+            <h3>Today's Chef Special</h3>
+            <span class="special-crown">👑</span>
+          </div>
+          <div id="todaySpecialItems" class="special-items-row"></div>
+        </div>
+
+        <!-- Category Title & Counter -->
+        <div class="current-cat-title" id="currentCatTitle">
+          <span id="catTitleText">All Items</span>
+          <span id="dishCount" class="dish-count-badge"></span>
+        </div>
+
+        <!-- The Colorful Food Cards Grid -->
+        <div id="menu" class="menu-container"></div>
+
+        <!-- Loading State -->
+        <div class="menu-loading" id="menuLoading">
+          <div class="loading-spinner"></div>
+          <p>Loading delicious dishes...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display:none">
+          <div class="empty-icon">🍽️</div>
+          <p>No dishes found. Try a different search or category.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISH DETAIL MODAL (PICTURE 3 POPUP) -->
+  <div class="dish-modal-overlay" id="dishModal" onclick="if(event.target===this)closeDishModal()">
+    <div class="dish-modal-box" id="dishModalBox">
+      <!-- Populated dynamically via openDishDetail(id) -->
+    </div>
+  </div>
+
+  <!-- FLOATING RIGHT SIDE CART BAR (ALWAYS CLEAR & VISIBLE) -->
+  <div class="floating-cart-pill" id="floatingCart" onclick="toggleCart(true)">
+    <div class="f-cart-left">
+      <span class="f-cart-icon">🛍️</span>
+      <span class="f-cart-text">YOUR CART</span>
+      <span class="f-cart-badge" id="floatingCartCount">0</span>
+    </div>
+    <div class="f-cart-right">
+      <span class="f-cart-total" id="floatingCartTotal">₹0</span>
+      <span class="f-cart-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- CART SIDEBAR DRAWER -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart(false)"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <div class="cart-header-title">
+        <span>🛍️</span>
+        <h3 data-t="your_cart">Your Order</h3>
+      </div>
+      <button class="cart-close" onclick="toggleCart(false)" title="Close Cart">✕</button>
+    </div>
+
+    <div id="cartItems" class="cart-items"></div>
+
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <!-- Coupon -->
+      <div class="coupon-row">
+        <input type="text" id="couponInput" placeholder="Enter promo code (e.g. WELCOME10)" class="coupon-field">
+        <button class="coupon-apply-btn" onclick="applyCoupon()">Apply</button>
+      </div>
+      <div id="couponMsg" class="coupon-msg"></div>
+
+      <div class="cart-totals">
+        <div class="total-row"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+        <div class="total-row discount-row" id="discountRow" style="display:none">
+          <span>Discount 🎉</span><span id="cartDiscount" class="discount-val">-₹0</span>
+        </div>
+        <div class="total-row grand-total"><span data-t="total">Total</span><span id="cartTotal">₹0</span></div>
+      </div>
+
+      <!-- Order Type -->
+      <div class="order-type-tabs">
+        <button class="ot-tab active" data-ot="dinein" onclick="setOrderType(this)">🍽️ Dine-in</button>
+        <button class="ot-tab" data-ot="takeaway" onclick="setOrderType(this)">🥡 Takeaway</button>
+        <button class="ot-tab" data-ot="delivery" onclick="setOrderType(this)">🛵 Delivery</button>
+      </div>
+
+      <div id="addrRow" style="display:none;margin-bottom:10px">
+        <input type="text" id="addrInput" class="form-input" placeholder="Delivery address">
+      </div>
+
+      <!-- Customer Info -->
+      <input type="text" id="custName" class="form-input" placeholder="Your name *" data-t-ph="name_ph">
+      <input type="tel" id="custPhone" class="form-input" placeholder="Phone number *" data-t-ph="phone_ph">
+
+      <!-- Payment -->
+      <div class="pay-tabs">
+        <button class="pay-tab active" data-pay="cash" onclick="setPayment(this)">💵 Cash</button>
+        <button class="pay-tab" data-pay="upi" onclick="setPayment(this)">📲 UPI</button>
+        <button class="pay-tab" data-pay="razorpay" onclick="setPayment(this)">💳 Card</button>
+      </div>
+
+      <button class="place-order-btn" onclick="placeOrder()" data-t="place_order">
+        🛍️ Place Order Now
+      </button>
+
+      <button class="whatsapp-btn" onclick="sendWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Order via WhatsApp
+      </button>
+    </div>
+
+    <div class="empty-cart" id="emptyCart">
+      <div class="empty-cart-icon">🛍️</div>
+      <p data-t="cart_empty">Your cart is empty</p>
+      <small>Click on any dish or + button to add it</small>
+    </div>
+  </div>
+
+  <!-- ORDER TRACKING MODAL -->
+  <div class="modal-overlay" id="trackModal" onclick="if(event.target===this)closeModal('trackModal')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📦 Track Your Order</h3>
+        <button class="modal-close" onclick="closeModal('trackModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="number" id="trackId" class="form-input" placeholder="Order ID">
+        <input type="tel" id="trackPhone" class="form-input" placeholder="Phone number">
+        <button class="btn gold-btn" onclick="doTrack()">Track Order</button>
+        <div id="trackResult" class="track-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESERVATION MODAL -->
+  <div class="modal-overlay" id="reservationModal" onclick="if(event.target===this)closeModal('reservationModal')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📅 Reserve a Table</h3>
+        <button class="modal-close" onclick="closeModal('reservationModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="resName" class="form-input" placeholder="Your name *">
+        <input type="tel" id="resPhone" class="form-input" placeholder="Phone number *">
+        <div class="form-row">
+          <input type="number" id="resGuests" class="form-input" placeholder="Guests" min="1" max="20" value="2">
+          <input type="date" id="resDate" class="form-input">
+        </div>
+        <select id="resTime" class="form-input">
+          <option value="">Select time slot</option>
+          <option>12:00 PM</option><option>12:30 PM</option>
+          <option>01:00 PM</option><option>01:30 PM</option>
+          <option>02:00 PM</option><option>07:00 PM</option>
+          <option>07:30 PM</option><option>08:00 PM</option>
+          <option>08:30 PM</option><option>09:00 PM</option>
+          <option>09:30 PM</option><option>10:00 PM</option>
+        </select>
+        <textarea id="resNotes" class="form-input" placeholder="Special requests (optional)" rows="2"></textarea>
+        <button class="btn gold-btn" onclick="submitReservation()">Confirm Reservation</button>
+        <div id="resResult" class="track-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL -->
+  <div class="modal-overlay" id="reviewModal" onclick="if(event.target===this)closeModal('reviewModal')">
+    <div class="modal-box review-modal-box">
+      <div class="modal-header">
+        <h3>⭐ Reviews & Ratings</h3>
+        <button class="modal-close" onclick="closeModal('reviewModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="review-write-box">
+          <h4>Share Your Experience</h4>
+          <div class="star-picker" id="starPicker">
+            <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span>
+            <span data-s="4">★</span><span data-s="5" class="active">★</span>
+          </div>
+          <input type="text" id="revName" class="form-input" placeholder="Your name *">
+          <input type="text" id="revDish" class="form-input" placeholder="Dish you tried">
+          <textarea id="revComment" class="form-input" rows="3" placeholder="Your review *"></textarea>
+          <button class="btn gold-btn" onclick="submitReview()">Submit Review</button>
+          <div id="reviewSubmitMsg" class="track-result"></div>
+        </div>
+        <div class="reviews-list" id="reviewsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="logo-sym">✦</span>
+        <span class="footer-name">PRAKRUTHI</span>
+        <p>Fine Dining & Authentic Tastes</p>
+        <p>Visakhapatnam, Andhra Pradesh</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <a href="#menusec">Menu</a>
+        <a href="javascript:void(0)" onclick="openReservationModal()">Reservations</a>
+        <a href="javascript:void(0)" onclick="openTrack()">Track Order</a>
+        <a href="/admin/login">Admin Portal</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p>📞 +91 98765 43210</p>
+        <p>📍 Dwaraka Nagar, Vizag</p>
+        <p>⏰ 11 AM – 11 PM Daily</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Prakruthi Restaurant. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard · Prakruthi Restaurant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --card-bg: #14120f;
+      --gold: #d4b077;
+      --gold-light: #f3dca5;
+      --border: #2a2418;
+      --border-light: #3a3223;
+      --txt: #e8dcc4;
+      --mut: #9c9078;
+      --green: #2ecc71;
+      --blue: #3498db;
+      --yellow: #f1c40f;
+      --red: #e74c3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0b0b0c;
+      color: var(--txt);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 4vw;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(11, 11, 12, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      letter-spacing: 3px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(46, 204, 113, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-live::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .nav-link {
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      transition: all 0.25s;
+    }
+    .nav-link:hover { background: rgba(212, 176, 119, 0.15); border-color: var(--gold); }
+    .logout-link { color: var(--red); border-color: rgba(231, 76, 60, 0.3); }
+
+    /* TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 4vw 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: 1px solid var(--border-light);
+      border-bottom: none;
+      color: var(--txt);
+      padding: 10px 18px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { background: rgba(212, 176, 119, 0.1); color: var(--gold); }
+    .tab-btn.active {
+      background: var(--gold);
+      color: #111;
+      border-color: var(--gold);
+      font-weight: 600;
+    }
+    .tab-counter {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+
+    main {
+      flex: 1;
+      padding: 22px 4vw 60px;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
+    .stat-card.alert::before { background: var(--yellow); }
+    .stat-card.success::before { background: var(--green); }
+    .stat-label { font-size: 11px; color: var(--mut); text-transform: uppercase; margin-bottom: 4px; }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--gold); font-family: 'Cinzel', serif; }
+
+    /* CONTROLS BAR */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+    }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pill {
+      background: none;
+      border: 1px solid var(--border-light);
+      color: var(--txt);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .pill:hover { border-color: var(--gold); color: var(--gold); }
+    .pill.active { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 600; }
+    
+    .search-input {
+      background: #0b0b0c;
+      border: 1px solid var(--border-light);
+      color: var(--txt);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      min-width: 220px;
+      outline: none;
+    }
+
+    .btn {
+      background: none;
+      border: 1px solid var(--border-light);
+      color: var(--txt);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn:hover { background: rgba(212, 176, 119, 0.15); border-color: var(--gold); }
+    .btn-gold { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 600; }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-green { background: #25D366; color: #111; border-color: #25D366; font-weight: 600; }
+    .btn-danger { color: var(--red); border-color: rgba(231, 76, 60, 0.4); }
+    .btn-success { color: var(--green); border-color: rgba(46, 204, 113, 0.4); }
+
+    /* TABLE */
+    .table-responsive {
+      overflow-x: auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; text-align: left; }
+    th {
+      background: rgba(11, 11, 12, 0.9);
+      color: var(--gold);
+      font-size: 11px;
+      text-transform: uppercase;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 12px 14px; border-bottom: 1px solid rgba(42, 36, 24, 0.6); font-size: 13px; vertical-align: middle; }
+    tr.new-row { background: rgba(212, 176, 119, 0.08); }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-New { background: rgba(241, 196, 15, 0.15); color: #f39c12; border: 1px solid rgba(241, 196, 15, 0.4); }
+    .status-Preparing { background: rgba(52, 152, 219, 0.15); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.4); }
+    .status-Delivered { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
+    .status-Cancelled { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
+
+    /* TABLE QR CARDS GRID */
+    .qr-standees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .qr-standee-card {
+      background: #fff;
+      color: #111;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+    .qr-standee-card h4 {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+      color: #72521c;
+    }
+    .qr-standee-card .table-no {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
+      margin: 4px 0;
+    }
+    .qr-standee-card img {
+      width: 140px;
+      height: 140px;
+      margin: 8px auto;
+      display: block;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px); display: none; place-items: center; z-index: 500; padding: 20px;
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal-content {
+      background: var(--card-bg); border: 1px solid var(--gold); border-radius: 12px;
+      padding: 24px; width: min(500px, 100%);
+    }
+
+    /* RECEIPT PRINT */
+    @media print {
+      body * { visibility: hidden; }
+      #printable_receipt, #printable_receipt * { visibility: visible; }
+      #printable_receipt { position: fixed; left: 0; top: 0; width: 100%; background: #fff; color: #000; }
+      .qr-standees-grid, .qr-standees-grid * { visibility: visible; }
+    }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-brand">
+      <span class="logo">PRAKRUTHI · ADMIN</span>
+      <span class="badge-live">LIVE CONSOLE</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn" id="sound_toggle_btn" onclick="toggleSound()">
+        <span id="sound_icon">🔔</span> <span id="sound_text">Sound: ON</span>
+      </button>
+      <button class="btn" onclick="testBeep()">▶ Test Chime</button>
+      <a href="/" target="_blank" class="nav-link">🌐 View Website ↗</a>
+      <a href="/admin/logout" class="nav-link logout-link">🚪 Logout ({{ admin_user }})</a>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tab_btn_orders" onclick="switchTab('orders')">
+      <span>📦 Live Orders</span>
+      <span class="tab-counter" id="badge_new_orders">0 New</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_dishes" onclick="switchTab('dishes')">
+      <span>🍲 Menu & Dishes</span>
+      <span class="tab-counter" id="badge_total_dishes">0</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_reservations" onclick="switchTab('reservations')">
+      <span>📅 Table Bookings</span>
+      <span class="tab-counter" id="badge_reservations">0</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_table_qrs" onclick="switchTab('table_qrs')">
+      <span>🔲 Table QR Codes</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_coupons" onclick="switchTab('coupons')">
+      <span>🎟️ Promo Coupons</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_reviews" onclick="switchTab('reviews')">
+      <span>⭐ Reviews</span>
+    </button>
+    <button class="tab-btn" id="tab_btn_specials" onclick="switchTab('specials')">
+      <span>🌟 Daily Specials</span>
+    </button>
+  </div>
+
+  <main>
+    <!-- TOP STATS ROW -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="stat_total_orders">0</div>
+      </div>
+      <div class="stat-card alert">
+        <div class="stat-label">Pending / New</div>
+        <div class="stat-value" id="stat_pending_orders">0</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Gross Revenue</div>
+        <div class="stat-value" id="stat_revenue">₹0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Table Reservations</div>
+        <div class="stat-value" id="stat_reservations">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Customer Reviews</div>
+        <div class="stat-value" id="stat_reviews">0</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: ORDERS SECTION -->
+    <section id="section_orders">
+      <div class="controls-bar">
+        <div class="filter-pills" id="order_filter_pills">
+          <button class="pill active" onclick="filterOrders('All')">All</button>
+          <button class="pill" onclick="filterOrders('New')">🔔 New (<span id="cnt_new">0</span>)</button>
+          <button class="pill" onclick="filterOrders('Preparing')">🍳 Preparing</button>
+          <button class="pill" onclick="filterOrders('Delivered')">✅ Delivered</button>
+          <button class="pill" onclick="filterOrders('Cancelled')">❌ Cancelled</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="search" class="search-input" id="search_orders" placeholder="Search Order #, Name, Phone..." oninput="renderOrders()">
+          <a href="/api/admin/export/orders.csv" class="btn btn-gold" download title="Download CSV for Excel">📥 Export to Excel</a>
+          <button class="btn" onclick="fetchOrders()">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th># Order</th>
+              <th>Date & Time</th>
+              <th>Customer & Type</th>
+              <th>Items Ordered</th>
+              <th>Total & Discount</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders_tbody">
+            <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--mut);">Loading live orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: DISHES SECTION -->
+    <section id="section_dishes" style="display:none;">
+      <div class="controls-bar">
+        <button class="btn btn-gold" onclick="openDishModal()">+ Add New Dish</button>
+        <input type="search" class="search-input" id="search_dishes" placeholder="Search dishes..." oninput="renderDishes()">
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Dish Name</th>
+              <th>Cuisine & Diet</th>
+              <th>Price</th>
+              <th>Featured</th>
+              <th>Visibility</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dishes_tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 3: RESERVATIONS SECTION -->
+    <section id="section_reservations" style="display:none;">
+      <div class="controls-bar">
+        <span style="font-size:14px;color:var(--gold);">Customer Table Bookings</span>
+        <button class="btn" onclick="fetchReservations()">🔄 Refresh Bookings</button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer Name</th>
+              <th>Phone</th>
+              <th>Guests</th>
+              <th>Date & Time</th>
+              <th>Special Notes</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reservations_tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 4: TABLE QR CODES (PRINTABLE STANDEES) -->
+    <section id="section_table_qrs" style="display:none;">
+      <div class="controls-bar">
+        <div>
+          <span style="font-size:14px;color:var(--gold);font-weight:600;">Printable Table Standees (Tables 1 - 20)</span>
+          <p style="font-size:12px;color:var(--mut);margin-top:2px;">Customers scan these QR codes at their table to view the menu and order directly with Table # pre-filled.</p>
+        </div>
+        <button class="btn btn-gold" onclick="window.print()">🖨️ Print All Table Standees</button>
+      </div>
+
+      <div class="qr-standees-grid" id="table_qrs_grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 5: COUPONS MANAGER -->
+    <section id="section_coupons" style="display:none;">
+      <div class="controls-bar">
+        <button class="btn btn-gold" onclick="openCouponModal()">+ Create Promo Coupon</button>
+        <span style="font-size:13px;color:var(--mut);">Active coupons can be applied by customers at checkout.</span>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Promo Code</th>
+              <th>Discount Type</th>
+              <th>Discount Value</th>
+              <th>Minimum Order</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="coupons_tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 6: CUSTOMER REVIEWS -->
+    <section id="section_reviews" style="display:none;">
+      <div class="controls-bar">
+        <span style="font-size:14px;color:var(--gold);">Patron Reviews & Ratings</span>
+        <button class="btn" onclick="fetchReviews()">🔄 Refresh</button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Dish / Occasion</th>
+              <th>Rating</th>
+              <th>Feedback Comment</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviews_tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 7: DAILY SPECIALS MANAGER -->
+    <section id="section_specials" style="display:none;">
+      <div class="controls-bar" style="flex-direction:column;align-items:flex-start;gap:16px;">
+        <div>
+          <span style="font-size:14px;color:var(--gold);font-weight:600;">🌟 Manage Daily Specials</span>
+          <p style="font-size:12px;color:var(--mut);margin-top:4px;">Set Today's Special or Weekly Specials. These appear prominently on the customer menu. Today's Special replaces the previous one when you set a new one.</p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;width:100%;">
+          <!-- Today's Special Form -->
+          <div style="flex:1;min-width:280px;background:rgba(212,176,119,.06);border:1px solid rgba(212,176,119,.2);border-radius:12px;padding:16px;">
+            <h4 style="color:var(--gold);margin-bottom:12px;">⭐ Set Today's Special</h4>
+            <select id="sp_today_dish" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;margin-bottom:8px;">
+              <option value="">Select a dish...</option>
+            </select>
+            <input id="sp_today_label" placeholder="Label (e.g. Chef's Pick)" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;margin-bottom:10px;">
+            <button class="btn btn-gold" onclick="setTodaySpecial()" style="width:100%;">👑 Set as Today's Special</button>
+          </div>
+          <!-- Weekly Special Form -->
+          <div style="flex:1;min-width:280px;background:rgba(212,176,119,.06);border:1px solid rgba(212,176,119,.2);border-radius:12px;padding:16px;">
+            <h4 style="color:var(--gold);margin-bottom:12px;">📅 Add Weekly Special</h4>
+            <select id="sp_weekly_dish" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;margin-bottom:8px;">
+              <option value="">Select a dish...</option>
+            </select>
+            <select id="sp_weekly_day" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;margin-bottom:8px;">
+              <option value="0">Monday</option><option value="1">Tuesday</option>
+              <option value="2">Wednesday</option><option value="3">Thursday</option>
+              <option value="4">Friday</option><option value="5">Saturday</option>
+              <option value="6">Sunday</option>
+            </select>
+            <input id="sp_weekly_label" placeholder="Label (e.g. Monday Special)" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;margin-bottom:10px;">
+            <button class="btn btn-gold" onclick="addWeeklySpecial()" style="width:100%;">📅 Add Weekly Special</button>
+          </div>
+        </div>
+        <div id="sp_msg" style="font-size:13px;padding:6px 0;"></div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <h4 style="color:var(--gold);margin-bottom:10px;font-size:14px;">Active Specials</h4>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Type</th><th>Dish</th><th>Day</th><th>Label</th><th>Price</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="specials_tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADD / EDIT DISH MODAL -->
+  <div class="modal-backdrop" id="dish_modal" onclick="if(event.target===this)closeDishModal()">
+    <div class="modal-content">
+      <h3 style="color:var(--gold);margin-bottom:14px;" id="dish_modal_title">Dish Details</h3>
+      <form id="dish_form" onsubmit="saveDish(event)">
+        <input type="hidden" id="df_id">
+        <div style="margin-bottom:10px;">
+          <label style="font-size:12px;color:var(--mut);">English Name *</label>
+          <input id="df_name_en" required style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Telugu Name</label>
+            <input id="df_name_te" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Hindi Name</label>
+            <input id="df_name_hi" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Cuisine</label>
+            <select id="df_cuisine" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+              <option value="Indian">Indian</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Tiffins">Tiffins</option>
+              <option value="Starters">Starters</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Diet</label>
+            <select id="df_veg" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+              <option value="1">🟢 Veg</option>
+              <option value="0">🔴 Non-Veg</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Price (₹) *</label>
+            <input id="df_price" type="number" min="1" required style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+          </div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:12px;color:var(--mut);">Ingredients</label>
+          <textarea id="df_ingredients" rows="2" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;"></textarea>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label><input type="checkbox" id="df_bestseller"> Mark as Chef's Special / Bestseller 🌟</label>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-size:12px;color:var(--mut);">Photo (optional)</label>
+          <input type="file" id="df_photo" accept="image/*">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;">
+          <button type="button" class="btn" onclick="closeDishModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save Dish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CREATE COUPON MODAL -->
+  <div class="modal-backdrop" id="coupon_modal" onclick="if(event.target===this)closeCouponModal()">
+    <div class="modal-content">
+      <h3 style="color:var(--gold);margin-bottom:14px;">Create Promo Coupon</h3>
+      <form onsubmit="saveCoupon(event)">
+        <div style="margin-bottom:10px;">
+          <label style="font-size:12px;color:var(--mut);">Promo Code (e.g. FESTIVE20) *</label>
+          <input id="cp_code" required style="text-transform:uppercase;width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Discount Type</label>
+            <select id="cp_type" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+              <option value="percent">Percentage (%)</option>
+              <option value="flat">Flat Amount (₹)</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--mut);">Value *</label>
+            <input id="cp_val" type="number" required min="1" placeholder="e.g. 15" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+          </div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px;color:var(--mut);">Min Order Amount (₹)</label>
+          <input id="cp_min" type="number" value="200" style="width:100%;padding:8px;background:#0b0b0c;border:1px solid var(--border-light);color:#fff;border-radius:4px;">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;">
+          <button type="button" class="btn" onclick="closeCouponModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold">Create Coupon</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RECEIPT MODAL -->
+  <div class="modal-backdrop" id="receipt_modal" onclick="if(event.target===this)closeReceiptModal()">
+    <div class="modal-content" style="max-width:420px;background:#1a1714;">
+      <div id="printable_receipt"></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button class="btn" onclick="closeReceiptModal()">Close</button>
+        <button class="btn btn-gold" onclick="window.print()">🖨️ Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allOrders = [], allDishes = [], allReservations = [], allCoupons = [], allReviews = [];
+    let currentOrderFilter = 'All';
+    let soundEnabled = localStorage.getItem('admin_sound') !== '0';
+    let lastSeenOrderId = null;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+    document.addEventListener('pointerdown', initAudio, { once: true });
+
+    function testBeep() {
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+      } catch(e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('admin_sound', soundEnabled ? '1' : '0');
+      document.getElementById('sound_icon').textContent = soundEnabled ? '🔔' : '🔕';
+      document.getElementById('sound_text').textContent = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+      if (soundEnabled) testBeep();
+    }
+
+    function switchTab(tab) {
+      ['orders', 'dishes', 'reservations', 'table_qrs', 'coupons', 'reviews', 'specials'].forEach(t => {
+        document.getElementById(`section_${t}`).style.display = (t === tab) ? 'block' : 'none';
+        document.getElementById(`tab_btn_${t}`).classList.toggle('active', t === tab);
+      });
+      if (tab === 'dishes') fetchDishes();
+      if (tab === 'reservations') fetchReservations();
+      if (tab === 'table_qrs') renderTableQRs();
+      if (tab === 'coupons') fetchCoupons();
+      if (tab === 'reviews') fetchReviews();
+      if (tab === 'specials') fetchSpecials();
+    }
+
+    async function api(url, opts) {
+      try {
+        const res = await fetch(url, opts);
+        if (res.status === 401) { window.location.href = '/admin/login'; return null; }
+        return await res.json();
+      } catch(e) { return null; }
+    }
+
+    async function fetchStats() {
+      const data = await api('/api/admin/stats');
+      if (!data) return;
+      document.getElementById('stat_total_orders').textContent = data.total_orders;
+      document.getElementById('stat_pending_orders').textContent = data.new_orders;
+      document.getElementById('stat_revenue').textContent = '₹' + Number(data.revenue).toLocaleString();
+      document.getElementById('stat_reservations').textContent = data.total_reservations;
+      document.getElementById('stat_reviews').textContent = data.total_reviews;
+      document.getElementById('badge_new_orders').textContent = data.new_orders + ' New';
+      document.getElementById('cnt_new').textContent = data.new_orders;
+      document.getElementById('badge_total_dishes').textContent = data.total_dishes;
+      document.getElementById('badge_reservations').textContent = data.total_reservations;
+    }
+
+    // ORDERS
+    async function fetchOrders() {
+      const data = await api('/api/admin/orders');
+      if (!Array.isArray(data)) return;
+      allOrders = data;
+      const maxId = Math.max(0, ...allOrders.map(o => o.id));
+      if (lastSeenOrderId !== null && maxId > lastSeenOrderId) {
+        document.title = `🔔 New Order! · Prakruthi Admin`;
+        if (soundEnabled) testBeep();
+      }
+      lastSeenOrderId = maxId;
+      renderOrders();
+      fetchStats();
+    }
+
+    function filterOrders(status) {
+      currentOrderFilter = status;
+      document.querySelectorAll('#order_filter_pills .pill').forEach(p => {
+        p.classList.toggle('active', p.textContent.includes(status) || (status === 'All' && p.textContent.includes('All')));
+      });
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const q = (document.getElementById('search_orders').value || '').toLowerCase();
+      const filtered = allOrders.filter(o => {
+        const matchesStatus = (currentOrderFilter === 'All') || (o.status === currentOrderFilter);
+        const matchesSearch = !q || String(o.id).includes(q) || (o.name && o.name.toLowerCase().includes(q)) || (o.phone && o.phone.includes(q));
+        return matchesStatus && matchesSearch;
+      });
+
+      const tbody = document.getElementById('orders_tbody');
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--mut);">No orders found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(o => {
+        const cleanPhone = o.phone.replace(/\D/g, '');
+        const waMsg = encodeURIComponent(`Hello ${o.name}! Greetings from Prakruthi Restaurant. Your order #${o.id} is now ${o.status}. Thank you!`);
+        const waLink = `https://wa.me/91${cleanPhone.slice(-10)}?text=${waMsg}`;
+
+        return `
+          <tr class="${o.status === 'New' ? 'new-row' : ''}">
+            <td><b>#${o.id}</b></td>
+            <td><small style="color:var(--mut)">${o.created}</small></td>
+            <td>
+              <b>${escapeHtml(o.name)}</b><br>
+              <a href="tel:${escapeHtml(o.phone)}" style="color:var(--gold);text-decoration:none;">📞 ${escapeHtml(o.phone)}</a><br>
+              <span style="font-size:11px;color:var(--mut);">${o.order_type.toUpperCase()} ${o.address ? '· ' + escapeHtml(o.address) : ''}</span>
+            </td>
+            <td>${escapeHtml(o.items_summary || 'No items')}</td>
+            <td>
+              <b style="color:var(--gold);">₹${o.total}</b>
+              ${o.discount ? `<br><small style="color:#2ecc71;">-₹${o.discount} (${o.coupon_code})</small>` : ''}
+            </td>
+            <td><small>${escapeHtml(o.payment)}</small></td>
+            <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+            <td>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                ${o.status === 'New' ? `
+                  <button class="btn btn-gold" onclick="updateOrderStatus(${o.id}, 'Preparing')">🍳 Prepare</button>
+                  <button class="btn btn-danger" onclick="updateOrderStatus(${o.id}, 'Cancelled')">Cancel</button>
+                ` : ''}
+                ${o.status === 'Preparing' ? `
+                  <button class="btn btn-success" onclick="updateOrderStatus(${o.id}, 'Delivered')">✅ Deliver</button>
+                ` : ''}
+                <a href="${waLink}" target="_blank" class="btn btn-green" title="Message customer on WhatsApp">📲 WhatsApp</a>
+                <button class="btn" onclick="openReceipt(${o.id})">🧾 Bill</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function updateOrderStatus(id, status) {
+      await api('/api/admin/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+      fetchOrders();
+    }
+
+    async function openReceipt(orderId) {
+      const data = await api(`/api/admin/orders/${orderId}`);
+      if (!data) return;
+      document.getElementById('printable_receipt').innerHTML = `
+        <div style="text-align:center;border-bottom:1px dashed #444;padding-bottom:10px;margin-bottom:10px;">
+          <h2 style="font-family:'Cinzel',serif;color:var(--gold);font-size:18px;">PRAKRUTHI RESTAURANT</h2>
+          <small>Beach Road, Visakhapatnam · +91 98765 43210</small><br>
+          <b>ORDER #${data.id} (${data.order_type.toUpperCase()})</b><br>
+          <small>${data.created}</small>
+        </div>
+        <div style="font-size:12px;margin-bottom:8px;">
+          Customer: <b>${escapeHtml(data.name)}</b> (${escapeHtml(data.phone)})<br>
+          ${data.address ? `Table / Address: <b>${escapeHtml(data.address)}</b><br>` : ''}
+          Payment: ${escapeHtml(data.payment)}
+        </div>
+        <table style="width:100%;font-size:12px;margin:8px 0;">
+          ${data.items.map(i => `
+            <tr>
+              <td>${escapeHtml(i.name_en)}</td>
+              <td style="text-align:center;">x${i.qty}</td>
+              <td style="text-align:right;">₹${i.qty * i.price}</td>
+            </tr>
+          `).join('')}
+        </table>
+        ${data.discount ? `<div style="text-align:right;color:#2ecc71;font-size:12px;">Discount: -₹${data.discount}</div>` : ''}
+        <div style="text-align:right;font-size:16px;font-weight:bold;border-top:1px dashed #444;padding-top:6px;color:var(--gold);">
+          Total: ₹${data.total}
+        </div>
+      `;
+      document.getElementById('receipt_modal').classList.add('open');
+    }
+    function closeReceiptModal() { document.getElementById('receipt_modal').classList.remove('open'); }
+
+    // TABLE QR STANDEES GENERATOR
+    function renderTableQRs() {
+      const origin = window.location.origin;
+      const grid = document.getElementById('table_qrs_grid');
+      let html = '';
+      for (let i = 1; i <= 20; i++) {
+        const tableUrl = `${origin}/?table=${i}`;
+        const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=0&data=${encodeURIComponent(tableUrl)}`;
+        html += `
+          <div class="qr-standee-card">
+            <h4>PRAKRUTHI</h4>
+            <div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;">Scan & Order</div>
+            <div class="table-no">TABLE #${i}</div>
+            <img src="${qrImg}" alt="Table ${i} QR">
+            <div style="font-size:10px;color:#555;margin-top:4px;">Direct Digital Menu</div>
+          </div>
+        `;
+      }
+      grid.innerHTML = html;
+    }
+
+    // COUPONS
+    async function fetchCoupons() {
+      const data = await api('/api/admin/coupons');
+      if (!Array.isArray(data)) return;
+      allCoupons = data;
+      renderCoupons();
+    }
+    function renderCoupons() {
+      const tbody = document.getElementById('coupons_tbody');
+      tbody.innerHTML = allCoupons.map(c => `
+        <tr>
+          <td><b style="color:var(--gold);font-family:monospace;font-size:14px;">${c.code}</b></td>
+          <td>${c.discount_type === 'percent' ? 'Percentage' : 'Flat (₹)'}</td>
+          <td><b>${c.discount_type === 'percent' ? c.discount_val + '%' : '₹' + c.discount_val}</b></td>
+          <td>₹${c.min_order}</td>
+          <td><span class="status-badge ${c.active ? 'status-Delivered' : 'status-Cancelled'}">${c.active ? 'Active' : 'Disabled'}</span></td>
+          <td>
+            <button class="btn" onclick="toggleCoupon(${c.id}, ${c.active ? 0 : 1})">${c.active ? 'Disable' : 'Enable'}</button>
+            <button class="btn btn-danger" onclick="deleteCoupon(${c.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" style="text-align:center;padding:20px;">No coupons</td></tr>';
+    }
+    function openCouponModal() { document.getElementById('coupon_modal').classList.add('open'); }
+    function closeCouponModal() { document.getElementById('coupon_modal').classList.remove('open'); }
+    async function saveCoupon(e) {
+      e.preventDefault();
+      await api('/api/admin/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: document.getElementById('cp_code').value,
+          discount_type: document.getElementById('cp_type').value,
+          discount_val: document.getElementById('cp_val').value,
+          min_order: document.getElementById('cp_min').value
+        })
+      });
+      closeCouponModal();
+      fetchCoupons();
+    }
+    async function toggleCoupon(id, active) {
+      await api(`/api/admin/coupons/${id}/toggle`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active })
+      });
+      fetchCoupons();
+    }
+    async function deleteCoupon(id) {
+      if (!confirm('Delete this coupon?')) return;
+      await api(`/api/admin/coupons/${id}`, { method: 'DELETE' });
+      fetchCoupons();
+    }
+
+    // REVIEWS
+    async function fetchReviews() {
+      const data = await api('/api/admin/reviews');
+      if (!Array.isArray(data)) return;
+      allReviews = data;
+      const tbody = document.getElementById('reviews_tbody');
+      tbody.innerHTML = allReviews.map(r => `
+        <tr>
+          <td>#${r.id}</td>
+          <td><b>${escapeHtml(r.name)}</b><br><small style="color:var(--mut);">${r.created}</small></td>
+          <td>${escapeHtml(r.dish_name || 'General')}</td>
+          <td><span style="color:#f1c40f;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span></td>
+          <td style="max-width:320px;">${escapeHtml(r.comment)}</td>
+          <td><span class="status-badge ${r.status === 'Approved' ? 'status-Delivered' : 'status-Cancelled'}">${r.status}</span></td>
+          <td>
+            <button class="btn btn-danger" onclick="deleteReview(${r.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;">No reviews</td></tr>';
+    }
+    async function deleteReview(id) {
+      if (!confirm('Delete this review?')) return;
+      await api(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+      fetchReviews();
+    }
+
+    // DISHES & RESERVATIONS
+    async function fetchDishes() {
+      allDishes = await api('/api/admin/dishes') || [];
+      renderDishes();
+    }
+    function renderDishes() {
+      const q = (document.getElementById('search_dishes').value || '').toLowerCase();
+      const filtered = allDishes.filter(d => !q || d.name_en.toLowerCase().includes(q));
+      document.getElementById('dishes_tbody').innerHTML = filtered.map(d => `
+        <tr>
+          <td><img src="/static/dishes/${escapeHtml(d.img)}.jpg" style="width:45px;height:45px;border-radius:4px;object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100';"></td>
+          <td><b>${escapeHtml(d.name_en)}</b></td>
+          <td>${d.cuisine} · ${d.veg ? '🟢 Veg' : '🔴 Non-Veg'}</td>
+          <td><b style="color:var(--gold);">₹${d.price}</b></td>
+          <td>${d.bestseller ? '🌟 Special' : 'Standard'}</td>
+          <td>
+            <button class="btn" onclick="toggleDish(${d.id}, ${d.available ? 0 : 1})">${d.available ? '✓ In Stock' : '✕ Hidden'}</button>
+          </td>
+          <td>
+            <button class="btn btn-danger" onclick="delDish(${d.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    async function toggleDish(id, a) {
+      await api(`/api/admin/dishes/${id}/available`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: a }) });
+      fetchDishes();
+    }
+    async function delDish(id) {
+      if (!confirm('Delete dish?')) return;
+      await api(`/api/admin/dishes/${id}`, { method: 'DELETE' });
+      fetchDishes();
+    }
+    function openDishModal() { document.getElementById('dish_modal').classList.add('open'); }
+    function closeDishModal() { document.getElementById('dish_modal').classList.remove('open'); }
+    async function saveDish(e) {
+      e.preventDefault();
+      const b = {
+        name_en: document.getElementById('df_name_en').value,
+        name_te: document.getElementById('df_name_te').value,
+        name_hi: document.getElementById('df_name_hi').value,
+        cuisine: document.getElementById('df_cuisine').value,
+        veg: +document.getElementById('df_veg').value,
+        price: +document.getElementById('df_price').value,
+        ingredients: document.getElementById('df_ingredients').value,
+        bestseller: document.getElementById('df_bestseller').checked ? 1 : 0
+      };
+      await api('/api/admin/dishes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+      closeDishModal();
+      fetchDishes();
+    }
+
+    async function fetchReservations() {
+      allReservations = await api('/api/admin/reservations') || [];
+      document.getElementById('reservations_tbody').innerHTML = allReservations.map(r => `
+        <tr>
+          <td>#${r.id}</td>
+          <td><b>${escapeHtml(r.name)}</b></td>
+          <td><a href="tel:${escapeHtml(r.phone)}" style="color:var(--gold);">📞 ${escapeHtml(r.phone)}</a></td>
+          <td>👥 ${r.guests}</td>
+          <td>${r.res_date} · ${r.res_time}</td>
+          <td><small>${escapeHtml(r.notes || 'None')}</small></td>
+          <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+          <td>
+            <select onchange="updateResStatus(${r.id}, this.value)" style="background:#0b0b0c;color:#fff;padding:4px;border:1px solid #333;">
+              ${['Confirmed', 'Seated', 'Completed', 'Cancelled'].map(s => `<option ${s === r.status ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="8" style="text-align:center;padding:20px;">No reservations</td></tr>';
+    }
+    async function updateResStatus(id, status) {
+      await api(`/api/admin/reservations/${id}/status`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+      fetchReservations();
+    }
+
+    function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+    // ---- SPECIALS ----
+    const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    let allSpecials = [];
+
+    async function fetchSpecials() {
+      // Populate dish dropdowns
+      const dishes = await api('/api/admin/dishes');
+      if (Array.isArray(dishes)) {
+        const opts = dishes.map(d => `<option value="${d.id}">${d.name_en} (${d.cuisine}, ₹${d.price})</option>`).join('');
+        document.getElementById('sp_today_dish').innerHTML = '<option value="">Select a dish...</option>' + opts;
+        document.getElementById('sp_weekly_dish').innerHTML = '<option value="">Select a dish...</option>' + opts;
+      }
+      const data = await api('/api/admin/specials');
+      if (!Array.isArray(data)) return;
+      allSpecials = data;
+      renderSpecials();
+    }
+
+    function renderSpecials() {
+      document.getElementById('specials_tbody').innerHTML = allSpecials.length ? allSpecials.map(s => `
+        <tr>
+          <td>#${s.id}</td>
+          <td><span style="background:${s.type==='today'?'rgba(212,176,119,.2)':'rgba(52,152,219,.2)'};color:${s.type==='today'?'var(--gold)':'#3498db'};padding:2px 8px;border-radius:10px;font-size:12px">${s.type==='today'?'⭐ Today':'📅 Weekly'}</span></td>
+          <td><b>${escapeHtml(s.name_en)}</b></td>
+          <td>${s.type === 'weekly' && s.day_of_week !== null ? DAY_NAMES[s.day_of_week] : '—'}</td>
+          <td>${escapeHtml(s.label || '—')}</td>
+          <td style="color:var(--gold)">₹${s.price}</td>
+          <td><button class="btn" style="color:var(--red);border-color:rgba(231,76,60,.3)" onclick="deleteSpecial(${s.id})">🗑️ Remove</button></td>
+        </tr>
+      `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--mut)">No active specials. Set one above!</td></tr>';
+    }
+
+    function showSpMsg(msg, ok) {
+      const el = document.getElementById('sp_msg');
+      el.textContent = msg;
+      el.style.color = ok ? 'var(--green)' : 'var(--red)';
+    }
+
+    async function setTodaySpecial() {
+      const dish_id = document.getElementById('sp_today_dish').value;
+      const label = document.getElementById('sp_today_label').value.trim();
+      if (!dish_id) { showSpMsg('Please select a dish', false); return; }
+      const data = await api('/api/admin/specials', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dish_id: +dish_id, type: 'today', label })
+      });
+      if (data && data.id) { showSpMsg(`✅ Today's Special set!`, true); fetchSpecials(); }
+      else showSpMsg('Failed to set special', false);
+    }
+
+    async function addWeeklySpecial() {
+      const dish_id = document.getElementById('sp_weekly_dish').value;
+      const day_of_week = document.getElementById('sp_weekly_day').value;
+      const label = document.getElementById('sp_weekly_label').value.trim();
+      if (!dish_id) { showSpMsg('Please select a dish', false); return; }
+      const data = await api('/api/admin/specials', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dish_id: +dish_id, type: 'weekly', day_of_week: +day_of_week, label })
+      });
+      if (data && data.id) { showSpMsg(`✅ Weekly Special added!`, true); fetchSpecials(); }
+      else showSpMsg('Failed to add special', false);
+    }
+
+    async function deleteSpecial(id) {
+      if (!confirm('Remove this special?')) return;
+      await api(`/api/admin/specials/${id}`, { method: 'DELETE' });
+      fetchSpecials();
+    }
+
+    fetchOrders();
+    fetchStats();
+    setInterval(() => {
+      if (document.getElementById('section_orders').style.display !== 'none') fetchOrders();
+    }, 6000);
+  </script>
+</body>
+</html>
